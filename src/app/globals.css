@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+/* Importa os estilos do Leaflet para o mapa funcionar corretamente */
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", sans-serif;
+}
+
+/* Garante que o mapa ocupe o espaço correto */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* Corrige z-index do popup do Leaflet */
+.leaflet-popup {
+  z-index: 1000;
+}
