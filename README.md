@@ -1,36 +1,165 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🏠 Família Segura — Frontend
 
-## Getting Started
+Interface web para o sistema de gerenciamento de abrigos e famílias afetadas por enchentes. Desenvolvida como projeto fullstack acadêmico no curso **Dev Fullstack da Vai Na Web**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🎯 Sobre o projeto
+
+O **Família Segura** é um sistema de gestão emergencial que conecta famílias desabrigadas a abrigos disponíveis durante situações de enchente. O frontend oferece uma experiência visual intuitiva com mapa interativo, dashboard em tempo real e formulários de cadastro.
+
+---
+
+## 🚀 Tecnologias
+
+| Tecnologia | Uso |
+|---|---|
+| Next.js 14 (App Router) | Framework React com roteamento e SSR |
+| Tailwind CSS | Estilização com classes utilitárias |
+| Leaflet + React Leaflet | Mapa interativo com marcadores |
+| Axios | Requisições HTTP para o backend |
+| Context API (React) | Gerenciamento global de autenticação |
+
+---
+
+## 📄 Páginas
+
+| Rota | Descrição | Auth |
+|---|---|---|
+| `/` | Mapa interativo com todos os abrigos | Não |
+| `/abrigos` | Listagem de abrigos com filtros e paginação | Não |
+| `/abrigos/:id` | Detalhe de um abrigo com mini mapa | Não |
+| `/login` | Tela de login | Não |
+| `/cadastro` | Criar nova conta de usuário | Não |
+| `/dashboard` | Contadores em tempo real | Sim |
+| `/familias` | Listagem de famílias cadastradas | Sim |
+| `/familias/cadastro` | Formulário de cadastro de família | Sim |
+
+---
+
+## 📁 Estrutura do projeto
+
+```
+src/
+├── app/
+│   ├── layout.js              # Layout global com Navbar e AuthProvider
+│   ├── page.js                # Mapa principal
+│   ├── globals.css            # Estilos globais
+│   ├── login/page.js          # Tela de login
+│   ├── cadastro/page.js       # Criar conta
+│   ├── dashboard/page.js      # Dashboard
+│   ├── abrigos/
+│   │   ├── page.js            # Listagem
+│   │   └── [id]/page.js       # Detalhe
+│   └── familias/
+│       ├── page.js            # Listagem
+│       └── cadastro/page.js   # Formulário
+├── components/
+│   ├── Navbar.jsx             # Navegação com menu hambúrguer
+│   ├── MapaAbrigos.jsx        # Mapa Leaflet com marcadores coloridos
+│   ├── CardAbrigo.jsx         # Card de abrigo na listagem
+│   ├── CardDashboard.jsx      # Card de contador
+│   └── StatusBadge.jsx        # Badge colorido de status
+├── context/
+│   └── AuthContext.jsx        # Contexto global de autenticação JWT
+└── services/
+    └── api.js                 # Instância Axios com interceptors
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## ⚙️ Como rodar localmente
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Pré-requisitos
+- Node.js v18+
+- Backend rodando (local ou em produção)
 
-## Learn More
+### Instalação
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Clone o repositório
+git clone https://github.com/thiagosimaswebdev/familia-segura-frontend.git
+cd familia-segura-frontend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Instale as dependências
+npm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Variáveis de ambiente
 
-## Deploy on Vercel
+Crie um arquivo `.env.local` na raiz com:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```env
+# URL do backend — use localhost para desenvolvimento local
+NEXT_PUBLIC_API_URL=http://localhost:3000
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Para apontar para produção, use a URL do Render:
+# NEXT_PUBLIC_API_URL=https://familia-segura-whp2.onrender.com
+```
+
+### Rodar o projeto
+
+```bash
+# Desenvolvimento
+npm run dev
+```
+
+Acesse `http://localhost:3001` (ou a porta indicada no terminal)
+
+---
+
+## 🗺️ Como usar o sistema
+
+### 1. Criar uma conta
+Acesse `/cadastro` e crie sua conta de usuário.
+
+### 2. Fazer login
+Acesse `/login` com suas credenciais. O token JWT é salvo automaticamente.
+
+### 3. Explorar o mapa
+A página inicial mostra todos os abrigos no mapa:
+- 🟢 **Verde** = Disponível (com vagas)
+- 🔴 **Vermelho** = Lotado (sem vagas)
+- ⚫ **Cinza** = Fechado
+
+Use os filtros para visualizar apenas um status específico. Clique em um marcador para ver detalhes e acessar a página do abrigo.
+
+### 4. Listar abrigos
+Em `/abrigos` você encontra todos os abrigos com filtro por status e bairro, paginação e barra de ocupação visual.
+
+### 5. Dashboard
+Em `/dashboard` (requer login) você vê os contadores em tempo real:
+- Total de abrigos, capacidade e vagas
+- Total de famílias cadastradas e status
+
+### 6. Cadastrar família
+Em `/familias/cadastro` (requer login) você registra uma família afetada podendo vinculá-la diretamente a um abrigo disponível.
+
+---
+
+## 🔐 Autenticação
+
+O sistema usa **JWT (JSON Web Token)**:
+
+1. Ao fazer login, o token é salvo no `localStorage`
+2. O `api.js` adiciona o token automaticamente em todas as requisições via interceptor
+3. Se o token expirar (8h), o sistema redireciona automaticamente para o login
+4. O `AuthContext` gerencia o estado global do usuário logado
+
+---
+
+## 🌐 Deploy
+
+🚀 Frontend (online): https://familia-segura-frontend.vercel.app/
+🔗 Backend API: https://familia-segura-whp2.onrender.com
+📘 Swagger Docs: https://familia-segura-whp2.onrender.com/docs
+🗄️ Banco de Dados: Supabase PostgreSQL (privado)
+
+Configure a variável `NEXT_PUBLIC_API_URL` no painel da Vercel em **Settings → Environment Variables** apontando para a URL do backend no Render.
+
+---
+
+## 👨‍💻 Autor
+
+**Thiago Simas**
+[![GitHub](https://img.shields.io/badge/GitHub-thiagosimaswebdev-181717?style=flat&logo=github)](https://github.com/thiagosimaswebdev)
