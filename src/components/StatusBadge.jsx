@@ -1,36 +1,20 @@
-// Componente reutilizável para exibir o status com cor correspondente
-// Funciona para status de abrigos (disponivel, lotado, fechado)
-// e famílias (desabrigada, em_abrigo, reassentada)
+// Badge colorido para exibir status de abrigos e famílias
 export default function StatusBadge({ status }) {
-
-  // Mapa de estilos por status
-  const estilos = {
+  const config = {
     // Status de abrigos
-    disponivel:   "bg-green-100 text-green-700",
-    lotado:       "bg-red-100 text-red-700",
-    fechado:      "bg-slate-100 text-slate-600",
-
+    disponivel:  { classe: "bg-green-100 text-green-700",  label: "Disponível"   },
+    lotado:      { classe: "bg-red-100 text-red-700",      label: "Lotado"       },
+    fechado:     { classe: "bg-slate-100 text-slate-600",  label: "Fechado"      },
     // Status de famílias
-    desabrigada:  "bg-red-100 text-red-700",
-    em_abrigo:    "bg-green-100 text-green-700",
-    reassentada:  "bg-blue-100 text-blue-700",
+    desabrigada: { classe: "bg-red-100 text-red-700",      label: "Desabrigada"  },
+    em_abrigo:   { classe: "bg-green-100 text-green-700",  label: "Em abrigo"    },
+    reassentada: { classe: "bg-blue-100 text-blue-700",    label: "Reassentada"  },
   };
 
-  // Labels legíveis para cada status
-  const labels = {
-    disponivel:   "Disponível",
-    lotado:       "Lotado",
-    fechado:      "Fechado",
-    desabrigada:  "Desabrigada",
-    em_abrigo:    "Em abrigo",
-    reassentada:  "Reassentada",
-  };
-
-  const estilo = estilos[status] || "bg-slate-100 text-slate-600";
-  const label = labels[status] || status;
+  const { classe, label } = config[status] || { classe: "bg-slate-100 text-slate-600", label: status };
 
   return (
-    <span className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${estilo}`}>
+    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${classe}`}>
       {label}
     </span>
   );

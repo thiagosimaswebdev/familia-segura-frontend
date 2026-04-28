@@ -1,70 +1,70 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 
 // Corrige o problema de ícones quebrados do Leaflet no Next.js
-// O Leaflet tenta carregar ícones de um caminho que não existe no Next.js
+// O Next.js processa os arquivos de forma diferente e o Leaflet perde o caminho dos ícones
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconUrl:       "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl:     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Cria ícones coloridos para cada status do abrigo
-// Verde = disponível, Vermelho = lotado, Cinza = fechado
+// Cria ícone circular colorido por status
+// Verde = disponível | Vermelho = lotado | Cinza = fechado
 function criarIcone(status) {
   const cores = {
-    disponivel: "#22c55e", // green-500
-    lotado: "#ef4444",     // red-500
-    fechado: "#94a3b8",    // slate-400
+    disponivel: { bg: "#22c55e", borda: "#16a34a" },
+    lotado:     { bg: "#ef4444", borda: "#dc2626" },
+    fechado:    { bg: "#94a3b8", borda: "#64748b" },
   };
+  const c = cores[status] || cores.disponivel;
 
-  const cor = cores[status] || cores.disponivel;
-
-  // Cria um ícone SVG personalizado para cada status
   return L.divIcon({
-    className: "",
+    className: "", // remove classe padrão do Leaflet
     html: `
       <div style="
-        width: 28px;
-        height: 28px;
-        background: ${cor};
-        border: 3px solid white;
+        width: 24px; height: 24px;
+        background: ${c.bg};
+        border: 3px solid ${c.borda};
         border-radius: 50%;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
       "></div>
     `,
-    iconSize: [28, 28],
-    iconAnchor: [14, 14], // ponto de ancoragem do ícone no mapa
-    popupAnchor: [0, -16], // posição do popup em relação ao ícone
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],   // centro do ícone fica no ponto do mapa
+    popupAnchor: [0, -14],  // popup aparece acima do ícone
   });
 }
 
-// Componente auxiliar que ajusta o centro do mapa quando os abrigos mudam
+// Componente auxiliar que ajusta a visão do mapa quando os abrigos mudam
+// useMap() é um hook do react-leaflet que acessa a instância do mapa
 function AjustarVista({ abrigos, zoom }) {
   const map = useMap();
 
   useEffect(() => {
+    if (!abrigos || abrigos.length === 0) return;
+
     if (abrigos.length === 1) {
-      // Se tem só um abrigo, centraliza nele
+      // Um abrigo: centraliza com zoom próximo
       map.setView([abrigos[0].latitude, abrigos[0].longitude], zoom || 15);
-    } else if (abrigos.length > 1) {
-      // Se tem vários, ajusta para mostrar todos
+    } else {
+      // Vários abrigos: ajusta para mostrar todos no viewport
       const bounds = L.latLngBounds(
         abrigos.map((a) => [a.latitude, a.longitude])
       );
-      map.fitBounds(bounds, { padding: [40, 40] });
+      map.fitBounds(bounds, { padding: [50, 50] });
     }
-  }, [abrigos, map, zoom]);
+  }, [abrigos, map, zoom]); // roda sempre que a lista de abrigos muda
 
-  return null;
+  return null; // componente auxiliar — não renderiza nada visualmente
 }
 
 export default function MapaAbrigos({ abrigos = [], zoom }) {
-  // Centro padrão do mapa — Rio de Janeiro
+  // Centro padrão: Rio de Janeiro
   const centroRio = [-22.9068, -43.1729];
 
   return (
@@ -74,14 +74,14 @@ export default function MapaAbrigos({ abrigos = [], zoom }) {
       style={{ width: "100%", height: "100%" }}
       scrollWheelZoom={true}
     >
-      {/* Camada base do mapa — OpenStreetMap (gratuito) */}
+      {/* Camada base do mapa — OpenStreetMap (gratuito, sem chave de API) */}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* Ajusta a vista automaticamente quando os abrigos mudam */}
-      {abrigos.length > 0 && <AjustarVista abrigos={abrigos} zoom={zoom} />}
+      {/* Ajusta a vista quando a lista de abrigos muda (filtros) */}
+      <AjustarVista abrigos={abrigos} zoom={zoom} />
 
       {/* Marcador para cada abrigo */}
       {abrigos.map((abrigo) => (
@@ -90,31 +90,36 @@ export default function MapaAbrigos({ abrigos = [], zoom }) {
           position={[abrigo.latitude, abrigo.longitude]}
           icon={criarIcone(abrigo.status)}
         >
-          {/* Popup que aparece ao clicar no marcador */}
-          <Popup>
-            <div className="min-w-48">
-              <p className="font-bold text-slate-800 text-sm">{abrigo.nome}</p>
-              <p className="text-slate-500 text-xs mt-1">{abrigo.bairro}</p>
-              <div className="flex items-center justify-between mt-2">
+          {/* Popup ao clicar no marcador */}
+          <Popup minWidth={200}>
+            <div>
+              {/* Nome do abrigo */}
+              <p className="font-bold text-slate-800 text-sm leading-tight mb-1">
+                {abrigo.nome}
+              </p>
+
+              {/* Bairro */}
+              <p className="text-slate-500 text-xs mb-2">{abrigo.bairro}</p>
+
+              {/* Vagas e status */}
+              <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-slate-600">
-                  {abrigo.vagas_disponiveis} vagas
+                  <strong>{abrigo.vagas_disponiveis}</strong> vagas
                 </span>
-                <span
-                  className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    abrigo.status === "disponivel"
-                      ? "bg-green-100 text-green-700"
-                      : abrigo.status === "lotado"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-slate-100 text-slate-600"
-                  }`}
-                >
-                  {abrigo.status}
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                  abrigo.status === "disponivel" ? "bg-green-100 text-green-700" :
+                  abrigo.status === "lotado"     ? "bg-red-100 text-red-700"     :
+                                                   "bg-slate-100 text-slate-600"
+                }`}>
+                  {abrigo.status === "disponivel" ? "Disponível" :
+                   abrigo.status === "lotado"     ? "Lotado"     : "Fechado"}
                 </span>
               </div>
-              {/* Link para o detalhe do abrigo */}
+
+              {/* Link para detalhes */}
               <a
                 href={`/abrigos/${abrigo.id}`}
-                className="block text-center text-xs text-blue-600 hover:underline mt-2"
+                className="block text-center text-xs text-blue-600 hover:underline font-medium"
               >
                 Ver detalhes →
               </a>

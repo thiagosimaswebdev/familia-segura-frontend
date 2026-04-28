@@ -1,27 +1,29 @@
 @import "tailwindcss";
-
-/* Importa os estilos do Leaflet para o mapa funcionar corretamente */
 @import "leaflet/dist/leaflet.css";
 
-:root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-}
+* { box-sizing: border-box; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Inter", sans-serif;
+  background: #f0f4ff;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Garante que o mapa ocupe o espaço correto */
+/* Mapa Leaflet */
 .leaflet-container {
   width: 100%;
   height: 100%;
   z-index: 0;
 }
 
-/* Corrige z-index do popup do Leaflet */
-.leaflet-popup {
-  z-index: 1000;
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
 }
+
+/* Animação de entrada suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.3s ease forwards; }
