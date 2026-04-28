@@ -181,7 +181,7 @@ Configure a variável `NEXT_PUBLIC_API_URL` no painel da Vercel em **Settings �
 
 ---
 
-##💡 Diferenciais técnicos
+💡 Diferenciais técnicos
 
 - Projeto fullstack completo com frontend e backend separados
 - API REST documentada com Swagger
