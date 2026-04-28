@@ -150,10 +150,10 @@ O sistema usa **JWT (JSON Web Token)**:
 
 ## 🌐 Deploy
 
-🚀 Frontend (online): https://familia-segura-frontend.vercel.app/
-🔗 Backend API: https://familia-segura-whp2.onrender.com
-📘 Swagger Docs: https://familia-segura-whp2.onrender.com/docs
-🗄️ Banco de Dados: Supabase PostgreSQL (privado)
+- Frontend (online): https://seu-projeto.vercel.app
+- Backend API: https://familia-segura-whp2.onrender.com
+- Documentação Swagger: https://familia-segura-whp2.onrender.com/docs
+- Banco de dados: Supabase (privado)
 
 Configure a variável `NEXT_PUBLIC_API_URL` no painel da Vercel em **Settings → Environment Variables** apontando para a URL do backend no Render.
 
