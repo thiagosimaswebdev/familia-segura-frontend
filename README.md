@@ -2,11 +2,33 @@
 
 Interface web para o sistema de gerenciamento de abrigos e famílias afetadas por enchentes. Desenvolvida como projeto fullstack acadêmico no curso **Dev Fullstack da Vai Na Web**.
 
+**Projeto Fullstack • API REST • JWT • PostgreSQL • Next.js • Impacto Social**
+
 ---
 
 ## 🎯 Sobre o projeto
 
-O **Família Segura** é um sistema de gestão emergencial que conecta famílias desabrigadas a abrigos disponíveis durante situações de enchente. O frontend oferece uma experiência visual intuitiva com mapa interativo, dashboard em tempo real e formulários de cadastro.
+O **Família Segura** é uma aplicação fullstack que simula um sistema real de gestão emergencial para enchentes e desastres climáticos.
+
+A plataforma conecta famílias desabrigadas a abrigos disponíveis, permitindo cadastro, acompanhamento e visualização de vagas em tempo real.
+
+O sistema utiliza banco de dados real, autenticação JWT e API REST, com base em locais reais/referenciais que poderiam atuar como pontos de acolhimento emergencial.
+
+Os dados operacionais, como ocupação, disponibilidade de vagas e famílias cadastradas, são simulados para fins acadêmicos e demonstração técnica.
+
+---
+
+## 🌍 Contexto do projeto
+
+Este projeto foi desenvolvido com foco em cenários urbanos sujeitos a enchentes, especialmente grandes centros metropolitanos.
+
+A proposta demonstra como a tecnologia pode apoiar:
+
+- localização rápida de abrigos disponíveis
+- gestão de capacidade e vagas
+- registro de famílias afetadas
+- apoio logístico em situações críticas
+- transparência de informações públicas
 
 ---
 
@@ -156,6 +178,19 @@ O sistema usa **JWT (JSON Web Token)**:
 - Banco de dados: Supabase (privado)
 
 Configure a variável `NEXT_PUBLIC_API_URL` no painel da Vercel em **Settings → Environment Variables** apontando para a URL do backend no Render.
+
+---
+
+##💡 Diferenciais técnicos
+
+- Projeto fullstack completo com frontend e backend separados
+- API REST documentada com Swagger
+- Autenticação JWT real
+- Banco PostgreSQL real em nuvem
+- Deploy profissional em múltiplas plataformas
+- Mapa interativo com geolocalização visual
+- Caso de uso com impacto social
+- Interface responsiva para mobile e desktop
 
 ---
 
