@@ -30,6 +30,12 @@ export default function Login() {
 
     try {
       await login(form);
+
+      // remove foco do input no mobile
+      if (document.activeElement) {
+        document.activeElement.blur();
+      }
+
     } catch (err) {
       setErro(
         err.response?.data?.erro ||
@@ -81,7 +87,7 @@ export default function Login() {
               onChange={handleChange}
               required
               placeholder="Digite seu usuário"
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -97,7 +103,7 @@ export default function Login() {
               onChange={handleChange}
               required
               placeholder="Digite sua senha"
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -110,7 +116,7 @@ export default function Login() {
           </button>
         </form>
 
-        {/* LINK CORRIGIDO */}
+        {/* link */}
         <p className="text-center text-sm text-slate-500 mt-6">
           Não tem conta?{" "}
           <Link
