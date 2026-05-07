@@ -3,7 +3,7 @@
 // Context API permite compartilhar dados globalmente sem passar props
 // Aqui gerenciamos: usuário logado, token, login e logout
 import { createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import api from "@/services/api";
 
 // Cria o contexto vazio
@@ -12,33 +12,79 @@ const AuthContext = createContext({});
 // Provider — envolve a aplicação e disponibiliza os dados de auth
 export function AuthProvider({ children }) {
   const router = useRouter();
-  const [usuario, setUsuario] = useState(null);     // dados do usuário logado
-  const [carregando, setCarregando] = useState(true); // true enquanto verifica sessão
+  const pathname = usePathname();
+
+  const [usuario, setUsuario] = useState(null);     
+  const [carregando, setCarregando] = useState(true);
+
+  // Rotas protegidas (precisam de login)
+  const rotasProtegidas = ["/familias", "/familias/cadastro", "/usuarios"];
 
   // Ao iniciar, verifica se há sessão salva no localStorage
   // Isso mantém o usuário logado ao recarregar a página
   useEffect(() => {
     const token = localStorage.getItem("token");
     const nomeUsuario = localStorage.getItem("usuario");
+    const role = localStorage.getItem("role");
+
     if (token && nomeUsuario) {
-      setUsuario({ usuario: nomeUsuario, token });
+      setUsuario({ usuario: nomeUsuario, token, role });
     }
-    setCarregando(false); // terminou de verificar — libera a renderização
+
+    setCarregando(false);
   }, []);
+
+  // 🔐 Proteção de rotas
+  useEffect(() => {
+    if (carregando) return;
+
+    const token = localStorage.getItem("token");
+
+    // Se tentar acessar rota protegida sem login → manda pro login
+    if (!token && rotasProtegidas.includes(pathname)) {
+      router.push("/login");
+    }
+
+    // Se tentar acessar /usuarios sem ser admin → bloqueia
+    if (
+      pathname === "/usuarios" &&
+      usuario &&
+      usuario.role !== "admin"
+    ) {
+      router.push("/");
+    }
+
+  }, [pathname, usuario, carregando]);
 
   // Função de login: chama a API, salva o token e atualiza o estado
   async function login(credenciais) {
     const { data } = await api.post("/login", credenciais);
+
+    // Salva no localStorage
     localStorage.setItem("token", data.token);
     localStorage.setItem("usuario", credenciais.usuario);
-    setUsuario({ usuario: credenciais.usuario, token: data.token });
-    router.push("/dashboard");
+
+    // 🔥 IMPORTANTE: pegar role do token (ou backend)
+    // como você já envia role no token, salvamos manualmente
+    const payload = JSON.parse(atob(data.token.split(".")[1]));
+    localStorage.setItem("role", payload.role);
+
+    setUsuario({
+      usuario: credenciais.usuario,
+      token: data.token,
+      role: payload.role,
+    });
+
+    // 🔁 Redirecionamento inteligente
+    router.push("/familias");
   }
 
   // Função de logout: limpa tudo e vai para o login
   function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
+    localStorage.removeItem("role");
+
     setUsuario(null);
     router.push("/login");
   }

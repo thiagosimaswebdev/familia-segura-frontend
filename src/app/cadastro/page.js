@@ -32,6 +32,7 @@ export default function CadastroUsuario() {
     setErro("");
     setSucesso("");
 
+    // 🔐 validação simples
     if (form.senha !== form.confirmarSenha) {
       setErro("As senhas não coincidem.");
       return;
@@ -46,16 +47,32 @@ export default function CadastroUsuario() {
         senha: form.senha,
       });
 
-      setSucesso("Usuário cadastrado com sucesso!");
+      // ✅ MENSAGEM AJUSTADA PARA NOVO FLUXO
+      setSucesso(
+        "Conta criada com sucesso! Aguarde aprovação do administrador para acessar o sistema."
+      );
 
+      // limpa o formulário
+      setForm({
+        nome: "",
+        usuario: "",
+        senha: "",
+        confirmarSenha: "",
+      });
+
+      // ⏳ redireciona com tempo maior (melhor UX)
       setTimeout(() => {
         router.push("/login");
-      }, 1500);
+      }, 2500);
+
     } catch (err) {
-      setErro(
-        err.response?.data?.erro ||
-        "Erro ao cadastrar usuário."
-      );
+
+      if (err.response?.status === 409) {
+        setErro("Este usuário já está cadastrado.");
+      } else {
+        setErro("Erro ao cadastrar usuário.");
+      }
+
     } finally {
       setCarregando(false);
     }
