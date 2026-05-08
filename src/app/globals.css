@@ -1,29 +1,114 @@
+/* ─────────────────────────────────────────────
+   Tailwind CSS — framework de classes utilitárias
+   Importa todas as utilidades do Tailwind
+───────────────────────────────────────────── */
 @import "tailwindcss";
+
+/* ─────────────────────────────────────────────
+   Leaflet — biblioteca de mapas interativos
+   Necessário para o mapa funcionar corretamente
+───────────────────────────────────────────── */
 @import "leaflet/dist/leaflet.css";
 
-* { box-sizing: border-box; }
+/* ─────────────────────────────────────────────
+   CORREÇÃO CRÍTICA — Zoom automático no iOS
+   
+   O iOS Safari dá zoom automático em inputs com
+   font-size menor que 16px. Isso causa o "salto"
+   que você viu após o login no iPhone.
+   
+   A solução é forçar font-size: 16px em todos
+   os inputs, selects e textareas no mobile.
+   Isso NÃO afeta o visual — o Tailwind continua
+   controlando o tamanho visualmente.
+───────────────────────────────────────────── */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Previne overflow horizontal indesejado
+   que pode causar scroll lateral no mobile
+───────────────────────────────────────────── */
+html, body {
+  overflow-x: hidden;
+  /* Garante que a página nunca seja maior que a tela */
+  max-width: 100vw;
+}
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   background: #f0f4ff;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Suaviza a renderização das fontes no iOS e macOS */
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Mapa Leaflet */
+/* ─────────────────────────────────────────────
+   Leaflet — dimensões e z-index
+   O mapa precisa de dimensões explícitas para
+   renderizar corretamente dentro de contêineres
+───────────────────────────────────────────── */
 .leaflet-container {
   width: 100%;
   height: 100%;
+  /* z-index baixo para não sobrepor Navbar e modais */
   z-index: 0;
 }
 
+/* Popup do Leaflet ao clicar no marcador */
 .leaflet-popup-content-wrapper {
   border-radius: 12px !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
 }
 
-/* Animação de entrada suave */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+.leaflet-popup-tip {
+  background: white !important;
 }
-.fade-in { animation: fadeIn 0.3s ease forwards; }
+
+/* ─────────────────────────────────────────────
+   Animação de entrada suave
+   Usada com a classe .fade-in nas páginas
+───────────────────────────────────────────── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* ─────────────────────────────────────────────
+   Scrollbar personalizada — browsers WebKit
+   (Chrome, Safari, Edge)
+───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
