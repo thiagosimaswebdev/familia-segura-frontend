@@ -1,18 +1,25 @@
+// src/app/familias/cadastro/page.js
+
 "use client";
 
+// ─────────────────────────────────────
 // CADASTRO DE FAMÍLIA
-// Só acessa após login
+// Continua protegido por login
+// ─────────────────────────────────────
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/services/api";
 
 export default function CadastroFamilia() {
+
   const router = useRouter();
 
   const [abrigos, setAbrigos] = useState([]);
+
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
+
   const [carregando, setCarregando] = useState(false);
 
   const [form, setForm] = useState({
@@ -22,11 +29,17 @@ export default function CadastroFamilia() {
     num_membros: "",
     abrigo_id: "",
     status: "desabrigada",
+
+    // agora observações será usado
+    // para cadastrar membros da família
     observacoes: "",
   });
 
-  // Proteção da rota + buscar abrigos
+  // ─────────────────────────────────────
+  // PROTEÇÃO DA ROTA
+  // ─────────────────────────────────────
   useEffect(() => {
+
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -35,7 +48,9 @@ export default function CadastroFamilia() {
     }
 
     async function buscarAbrigos() {
+
       try {
+
         const { data } = await api.get("/abrigos", {
           params: {
             status: "disponivel",
@@ -44,23 +59,36 @@ export default function CadastroFamilia() {
         });
 
         setAbrigos(data.abrigos || []);
+
       } catch (error) {
-        console.error("Erro ao buscar abrigos:", error);
+
+        console.error(
+          "Erro ao buscar abrigos:",
+          error
+        );
       }
     }
 
     buscarAbrigos();
+
   }, [router]);
 
+  // ─────────────────────────────────────
+  // INPUTS
+  // ─────────────────────────────────────
   function handleChange(e) {
+
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
   }
 
-  // máscara CPF
+  // ─────────────────────────────────────
+  // MÁSCARA CPF
+  // ─────────────────────────────────────
   function handleCpf(e) {
+
     let valor = e.target.value.replace(/\D/g, "");
 
     valor = valor.slice(0, 11);
@@ -75,17 +103,25 @@ export default function CadastroFamilia() {
     });
   }
 
+  // ─────────────────────────────────────
+  // SUBMIT
+  // ─────────────────────────────────────
   async function handleSubmit(e) {
+
     e.preventDefault();
 
     setErro("");
     setSucesso("");
+
     setCarregando(true);
 
     try {
+
       const body = {
         ...form,
+
         num_membros: Number(form.num_membros),
+
         abrigo_id: form.abrigo_id
           ? Number(form.abrigo_id)
           : null,
@@ -93,17 +129,21 @@ export default function CadastroFamilia() {
 
       await api.post("/familias", body);
 
-      setSucesso("Família cadastrada com sucesso!");
+      setSucesso(
+        "Família cadastrada com sucesso!"
+      );
 
       setTimeout(() => {
         router.push("/familias");
       }, 1800);
 
     } catch (err) {
+
       setErro(
         err.response?.data?.erro ||
         "Erro ao cadastrar família"
       );
+
     } finally {
       setCarregando(false);
     }
@@ -114,11 +154,15 @@ export default function CadastroFamilia() {
 
       <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 w-full max-w-2xl fade-in">
 
-        {/* topo */}
+        {/* ───────────────────────────── */}
+        {/* TOPO */}
+        {/* ───────────────────────────── */}
         <div className="text-center mb-8">
 
           <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
-            <span className="text-3xl">👨‍👩‍👧‍👦</span>
+            <span className="text-3xl">
+              👨‍👩‍👧‍👦
+            </span>
           </div>
 
           <h1 className="text-2xl font-bold text-slate-800">
@@ -126,12 +170,14 @@ export default function CadastroFamilia() {
           </h1>
 
           <p className="text-slate-500 text-sm mt-1">
-            Registre famílias afetadas pela enchente
+            Cadastre responsáveis e membros familiares abrigados
           </p>
 
         </div>
 
-        {/* alertas */}
+        {/* ───────────────────────────── */}
+        {/* ALERTAS */}
+        {/* ───────────────────────────── */}
         {erro && (
           <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 mb-5 text-sm">
             ❌ {erro}
@@ -144,11 +190,17 @@ export default function CadastroFamilia() {
           </div>
         )}
 
-        {/* formulário */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* ───────────────────────────── */}
+        {/* FORMULÁRIO */}
+        {/* ───────────────────────────── */}
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+        >
 
-          {/* nome */}
+          {/* nome responsável */}
           <div>
+
             <label className="block text-sm font-semibold text-slate-700 mb-1.5">
               Nome do responsável
             </label>
@@ -160,14 +212,16 @@ export default function CadastroFamilia() {
               onChange={handleChange}
               required
               placeholder="Nome completo"
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+
           </div>
 
-          {/* linha cpf telefone */}
+          {/* cpf + telefone */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             <div>
+
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 CPF
               </label>
@@ -180,11 +234,13 @@ export default function CadastroFamilia() {
                 required
                 maxLength={14}
                 placeholder="000.000.000-00"
-                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+
             </div>
 
             <div>
+
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Telefone
               </label>
@@ -196,14 +252,16 @@ export default function CadastroFamilia() {
                 onChange={handleChange}
                 required
                 placeholder="21999999999"
-                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+
             </div>
 
           </div>
 
           {/* membros */}
           <div>
+
             <label className="block text-sm font-semibold text-slate-700 mb-1.5">
               Número de membros
             </label>
@@ -216,12 +274,14 @@ export default function CadastroFamilia() {
               required
               min="1"
               placeholder="Ex: 4"
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+
           </div>
 
           {/* abrigo */}
           <div>
+
             <label className="block text-sm font-semibold text-slate-700 mb-1.5">
               Vincular abrigo
             </label>
@@ -230,37 +290,53 @@ export default function CadastroFamilia() {
               name="abrigo_id"
               value={form.abrigo_id}
               onChange={handleChange}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
+
               <option value="">
                 Nenhum (desabrigada)
               </option>
 
               {abrigos.map((abrigo) => (
+
                 <option
                   key={abrigo.id}
                   value={abrigo.id}
                 >
                   {abrigo.nome} - {abrigo.bairro}
                 </option>
+
               ))}
+
             </select>
+
           </div>
 
-          {/* observações */}
+          {/* membros familiares */}
           <div>
+
             <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-              Observações
+              Membros da família
             </label>
 
             <textarea
               name="observacoes"
               value={form.observacoes}
               onChange={handleChange}
-              rows="3"
-              placeholder="Informações adicionais..."
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              rows="6"
+              placeholder={`Adicione membros aqui:
+
+Ex:
+Maria Souza
+João Souza
+Ana Souza`}
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             />
+
+            <p className="text-xs text-slate-400 mt-2">
+              Informe os nomes dos familiares para facilitar buscas públicas.
+            </p>
+
           </div>
 
           {/* botão */}

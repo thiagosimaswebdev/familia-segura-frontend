@@ -1,91 +1,69 @@
 # 🏠 Família Segura — Frontend
 
-Interface web para o sistema de gerenciamento de abrigos e famílias afetadas por enchentes. Desenvolvida como projeto fullstack acadêmico no curso **Dev Fullstack da Vai Na Web**.
-
-**Projeto Fullstack • API REST • JWT • PostgreSQL • Next.js • Impacto Social**
+Interface web do sistema de gerenciamento de abrigos e famílias afetadas por enchentes.  
+Projeto fullstack desenvolvido no curso **Dev Fullstack da Vai Na Web**.
 
 ---
 
 ## 🎯 Sobre o projeto
 
-O **Família Segura** é uma aplicação fullstack que simula um sistema real de gestão emergencial para enchentes e desastres climáticos.
+O **Família Segura** conecta famílias desabrigadas a abrigos disponíveis durante situações de emergência. O sistema oferece um mapa interativo em tempo real, busca pública de familiares, dashboard de acompanhamento e painel administrativo.
 
-A plataforma conecta famílias desabrigadas a abrigos disponíveis, permitindo cadastro, acompanhamento e visualização de vagas em tempo real.
-
-O sistema utiliza banco de dados real, autenticação JWT e API REST, com base em locais reais/referenciais que poderiam atuar como pontos de acolhimento emergencial.
-
-Os dados operacionais, como ocupação, disponibilidade de vagas e famílias cadastradas, são simulados para fins acadêmicos e demonstração técnica.
+A proposta central é simples: **qualquer pessoa consegue localizar um familiar abrigado** sem precisar criar conta ou fazer login.
 
 ---
 
-## 🌍 Contexto do projeto
-
-Este projeto foi desenvolvido com foco em cenários urbanos sujeitos a enchentes, especialmente grandes centros metropolitanos.
-
-A proposta demonstra como a tecnologia pode apoiar:
-
-- localização rápida de abrigos disponíveis
-- gestão de capacidade e vagas
-- registro de famílias afetadas
-- apoio logístico em situações críticas
-- transparência de informações públicas
-
----
-
-## 🚀 Tecnologias
+## 🚀 Stack
 
 | Tecnologia | Uso |
 |---|---|
-| Next.js 14 (App Router) | Framework React com roteamento e SSR |
-| Tailwind CSS | Estilização com classes utilitárias |
+| Next.js 14 (App Router) | Framework React com roteamento |
+| Tailwind CSS | Estilização responsiva |
 | Leaflet + React Leaflet | Mapa interativo com marcadores |
-| Axios | Requisições HTTP para o backend |
-| Context API (React) | Gerenciamento global de autenticação |
+| Axios | Comunicação com o backend |
+| Context API | Gerenciamento de estado global |
 
 ---
 
 ## 📄 Páginas
 
-| Rota | Descrição | Auth |
-|---|---|---|
-| `/` | Mapa interativo com todos os abrigos | Não |
-| `/abrigos` | Listagem de abrigos com filtros e paginação | Não |
-| `/abrigos/:id` | Detalhe de um abrigo com mini mapa | Não |
-| `/login` | Tela de login | Não |
-| `/cadastro` | Criar nova conta de usuário | Não |
-| `/dashboard` | Contadores em tempo real | Sim |
-| `/familias` | Listagem de famílias cadastradas | Sim |
-| `/familias/cadastro` | Formulário de cadastro de família | Sim |
+| Rota | Descrição |
+|---|---|
+| `/` | Mapa interativo com todos os abrigos |
+| `/abrigos` | Listagem com filtros por status e bairro |
+| `/abrigos/:id` | Detalhe do abrigo com mini mapa e ocupação |
+| `/familias` | Busca pública de familiares pelo nome |
+| `/familias/cadastro` | Cadastro de família (requer conta ativa) |
+| `/dashboard` | Visão geral em tempo real (requer login) |
+| `/login` | Acesso ao sistema |
+| `/cadastro` | Criar nova conta |
 
 ---
 
-## 📁 Estrutura do projeto
+## ✨ Funcionalidades
+
+- 🗺️ Mapa ao vivo com marcadores coloridos por status do abrigo
+- 🔍 Busca pública de familiares — sem necessidade de login
+- 📊 Dashboard com contadores e barras de ocupação
+- 📱 Layout responsivo com menu hambúrguer para mobile
+- 🔒 Área autenticada para cadastro e gestão de dados
+- ⚙️ Painel administrativo para gerenciamento de usuários
+
+---
+
+## 📁 Estrutura
 
 ```
 src/
-├── app/
-│   ├── layout.js              # Layout global com Navbar e AuthProvider
-│   ├── page.js                # Mapa principal
-│   ├── globals.css            # Estilos globais
-│   ├── login/page.js          # Tela de login
-│   ├── cadastro/page.js       # Criar conta
-│   ├── dashboard/page.js      # Dashboard
-│   ├── abrigos/
-│   │   ├── page.js            # Listagem
-│   │   └── [id]/page.js       # Detalhe
-│   └── familias/
-│       ├── page.js            # Listagem
-│       └── cadastro/page.js   # Formulário
-├── components/
-│   ├── Navbar.jsx             # Navegação com menu hambúrguer
-│   ├── MapaAbrigos.jsx        # Mapa Leaflet com marcadores coloridos
-│   ├── CardAbrigo.jsx         # Card de abrigo na listagem
-│   ├── CardDashboard.jsx      # Card de contador
-│   └── StatusBadge.jsx        # Badge colorido de status
-├── context/
-│   └── AuthContext.jsx        # Contexto global de autenticação JWT
-└── services/
-    └── api.js                 # Instância Axios com interceptors
+├── app/              # Páginas (Next.js App Router)
+├── components/       # Componentes reutilizáveis
+│   ├── Navbar.jsx
+│   ├── MapaAbrigos.jsx
+│   ├── CardAbrigo.jsx
+│   ├── CardDashboard.jsx
+│   └── StatusBadge.jsx
+├── context/          # Estado global de autenticação
+└── services/         # Integração com a API
 ```
 
 ---
@@ -94,107 +72,51 @@ src/
 
 ### Pré-requisitos
 - Node.js v18+
-- Backend rodando (local ou em produção)
+- Backend do projeto rodando (local ou em produção)
 
 ### Instalação
 
 ```bash
-# Clone o repositório
 git clone https://github.com/thiagosimaswebdev/familia-segura-frontend.git
 cd familia-segura-frontend
-
-# Instale as dependências
 npm install
 ```
 
 ### Variáveis de ambiente
 
-Crie um arquivo `.env.local` na raiz com:
+Crie um arquivo `.env.local` na raiz:
 
 ```env
-# URL do backend — use localhost para desenvolvimento local
-NEXT_PUBLIC_API_URL=http://localhost:3000
-
-# Para apontar para produção, use a URL do Render:
-# NEXT_PUBLIC_API_URL=https://familia-segura-whp2.onrender.com
+NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
-### Rodar o projeto
+Para apontar para o ambiente de produção, substitua pelo endereço do seu backend hospedado.
+
+### Iniciar
 
 ```bash
-# Desenvolvimento
 npm run dev
 ```
-
-Acesse `http://localhost:3001` (ou a porta indicada no terminal)
-
----
-
-## 🗺️ Como usar o sistema
-
-### 1. Criar uma conta
-Acesse `/cadastro` e crie sua conta de usuário.
-
-### 2. Fazer login
-Acesse `/login` com suas credenciais. O token JWT é salvo automaticamente.
-
-### 3. Explorar o mapa
-A página inicial mostra todos os abrigos no mapa:
-- 🟢 **Verde** = Disponível (com vagas)
-- 🔴 **Vermelho** = Lotado (sem vagas)
-- ⚫ **Cinza** = Fechado
-
-Use os filtros para visualizar apenas um status específico. Clique em um marcador para ver detalhes e acessar a página do abrigo.
-
-### 4. Listar abrigos
-Em `/abrigos` você encontra todos os abrigos com filtro por status e bairro, paginação e barra de ocupação visual.
-
-### 5. Dashboard
-Em `/dashboard` (requer login) você vê os contadores em tempo real:
-- Total de abrigos, capacidade e vagas
-- Total de famílias cadastradas e status
-
-### 6. Cadastrar família
-Em `/familias/cadastro` (requer login) você registra uma família afetada podendo vinculá-la diretamente a um abrigo disponível.
-
----
-
-## 🔐 Autenticação
-
-O sistema usa **JWT (JSON Web Token)**:
-
-1. Ao fazer login, o token é salvo no `localStorage`
-2. O `api.js` adiciona o token automaticamente em todas as requisições via interceptor
-3. Se o token expirar (8h), o sistema redireciona automaticamente para o login
-4. O `AuthContext` gerencia o estado global do usuário logado
 
 ---
 
 ## 🌐 Deploy
 
-- Frontend (online): https://seu-projeto.vercel.app
-- Backend API: https://familia-segura-whp2.onrender.com
-- Documentação Swagger: https://familia-segura-whp2.onrender.com/docs
-- Banco de dados: Supabase (privado)
+- **Frontend:** [Vercel](https://vercel.com)
+- **Backend:** [Render](https://render.com)
+- **Banco de dados:** [Supabase](https://supabase.com)
 
-Configure a variável `NEXT_PUBLIC_API_URL` no painel da Vercel em **Settings → Environment Variables** apontando para a URL do backend no Render.
+Configure a variável `NEXT_PUBLIC_API_URL` no painel da Vercel apontando para a URL do seu backend em produção.
 
 ---
 
-💡 Diferenciais técnicos
+## 📱 Compatibilidade mobile
 
-- Projeto fullstack completo com frontend e backend separados
-- API REST documentada com Swagger
-- Autenticação JWT real
-- Banco PostgreSQL real em nuvem
-- Deploy profissional em múltiplas plataformas
-- Mapa interativo com geolocalização visual
-- Caso de uso com impacto social
-- Interface responsiva para mobile e desktop
+O projeto foi ajustado para funcionar corretamente em dispositivos iOS, evitando o comportamento de zoom automático ao interagir com campos de formulário.
 
 ---
 
 ## 👨‍💻 Autor
 
-**Thiago Simas**
+**Thiago Simas**  
 [![GitHub](https://img.shields.io/badge/GitHub-thiagosimaswebdev-181717?style=flat&logo=github)](https://github.com/thiagosimaswebdev)

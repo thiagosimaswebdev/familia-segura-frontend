@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
   const [carregando, setCarregando] = useState(true);
 
   // Rotas protegidas (precisam de login)
-  const rotasProtegidas = ["/familias", "/familias/cadastro", "/usuarios"];
+  const rotasProtegidas = ["/familias/cadastro", "/usuarios"];
 
   // Ao iniciar, verifica se há sessão salva no localStorage
   // Isso mantém o usuário logado ao recarregar a página
